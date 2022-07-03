@@ -1,22 +1,24 @@
-import { BrowserRouter as Router, Route,Routes } from "react-router-dom";
-import Login from './components/Login';
-import Register from "./components/Register";
-import StudentNotes from "./components/StudentNotes";
-import AddUser from "./components/AddUser";
-import UserList from "./components/UserList"; //fgh
+import logo from './logo.svg';
+import './App.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path='/' element={<Login />}/>
-        <Route path='/register' element={<Register />}/>
-        <Route path='/my-notes' element={<StudentNotes />}/>
-        <Route path='/add-user' element={<AddUser />}/>
-        <Route path='/user-list' element={<UserList />}/>
-      </Routes>
-    </Router>
-  
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
   );
 }
 
