@@ -15,7 +15,7 @@ const signToken = userID =>{
 }
 
 //Add user details
-userRouter.post('/register',(req,res)=>{
+userRouter.post('/',(req,res)=>{
   const { firstName,lastName,email,dateOfBirth,mobile,status,password,accountType} = req.body;
   User.findOne({email},(err,user)=>{
       if(err)
@@ -36,7 +36,7 @@ userRouter.post('/register',(req,res)=>{
 });
 
 //Display user details
-userRouter.get("/profiles",(req, res) => {
+userRouter.get("/",(req, res) => {
   User.find().exec((err,users) =>{
     if(err){
       return res.status(400).json({
@@ -51,7 +51,7 @@ userRouter.get("/profiles",(req, res) => {
 });
 
 //Display specific user details
-userRouter.get(`/profile/:id`,(req, res) => {
+userRouter.get(`/:id`,(req, res) => {
 
   let postId = req.params.id;
 
@@ -68,7 +68,7 @@ userRouter.get(`/profile/:id`,(req, res) => {
 });
 
 //update user details
-userRouter.put('/updateUser/:id',(req, res) => {
+userRouter.put('/:id',(req, res) => {
   User.findByIdAndUpdate(
     req.params.id,
     {
@@ -88,7 +88,7 @@ userRouter.put('/updateUser/:id',(req, res) => {
 
 //Delete student
 
-userRouter.delete('/deleteUser/:id',(req, res) => {
+userRouter.delete('/:id',(req, res) => {
   User.findByIdAndRemove(req.params.id).exec((err,deleteuser) =>{
 
       if(err) return res.status(400).json({
