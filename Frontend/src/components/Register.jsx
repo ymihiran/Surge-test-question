@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import './styles/register.style.css';
 import axios from 'axios';
+import LoadingOverlay from 'react-loading-overlay'
+import BounceLoader from 'react-spinners/BounceLoader'
 
 
 export default function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("tempory2@temp.com");
+  const [email, setEmail] = useState("tempory12@temp.com");
   const [mobile, setMobile] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [rPassword, setRPassword] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
 
 
@@ -18,6 +21,7 @@ export default function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if(password === rPassword){ //check if passwords match
         const newUser = {  
@@ -31,7 +35,7 @@ export default function Register() {
         }
 
         axios.post("http://localhost:8070/user/",newUser).then(()=>{
-        
+            setLoading(false);
             alert("User Created Successfully");
         
         }).catch((err)=>{
@@ -54,7 +58,14 @@ export default function Register() {
   
 
   return (
+    <LoadingOverlay
+            active={loading}
+            spinner={<BounceLoader />}
+    >
     <div>
+        
+
+     
 
     <div class="page-wrapper p-t-130 p-b-100 font-poppins">
         <div class="wrapper wrapper--w680">
@@ -139,8 +150,13 @@ export default function Register() {
             </div>
         </div>
     </div>
+    
 
     </div>
 
+    </LoadingOverlay>  
+    
+
   );
+  
 }
