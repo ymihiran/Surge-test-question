@@ -7,6 +7,7 @@ let User = require("../models/user.model.js");
 const { findById } = require('../models/user.model.js');
 
 
+
 const signToken = userID =>{
   return JWT.sign({
       iss : "ecobin",
@@ -48,6 +49,52 @@ userRouter.get("/",(req, res) => {
       existingUsers:users
     });
   });
+});
+
+userRouter.get('/users', async (req, res) => {
+  const page = parseInt(req.query.page)
+  const limit = parseInt(req.query.limit)
+
+  const startIndex = (page - 1) * limit
+  const endIndex = page * limit
+
+  let previous,next,count;
+
+  async function countDoc(){
+    count = await User.countDocuments().exec()
+  }
+
+  await countDoc();
+  
+
+  if (endIndex < count) {
+    next = {
+      page: page + 1,
+      limit: limit
+    }
+  }
+  
+  if (startIndex > 0) {
+    previous = {
+      page: page - 1,
+      limit: limit
+    }
+  }
+
+  User.find().limit(limit).skip(startIndex).exec((err,users) =>{
+    if(err){
+      return res.status(400).json({
+        error:err
+      });
+    }
+    return res.status(200).json({
+      success:true,
+      existingUsers:users,
+      prev:previous,
+      next:next
+    });
+  });
+
 });
 
 //Display specific user details
@@ -129,5 +176,39 @@ userRouter.get('/authenticated',passport.authenticate('jwt',{session : false}),(
   const {_id,username,name,phone,email,nic,gender,role} = req.user;
   res.status(200).json({isAuthenticated : true, user : {_id,username,name,phone,email,nic,gender,role}});
 });
+
+//Pagination code
+
+function paginatedResults(model,startIndex,endIndex) {
+  return async (req, res, next) => {
+    const page = parseInt(req.query.page)
+    const limit = parseInt(req.query.limit)
+
+  
+    const results = {}
+
+
+    if (endIndex < await model.countDocuments().exec()) {
+      results.next = {
+        page: page + 1,
+        limit: limit
+      }
+    }
+    
+    if (startIndex > 0) {
+      results.previous = {
+        page: page - 1,
+        limit: limit
+      }
+    }
+    try {
+      results.results = await model.find().limit(limit).skip(startIndex).exec()
+      res.paginatedResults = results
+      next()
+    } catch (e) {
+      res.status(500).json({ message: e.message })
+    }
+  }
+}
 
 module.exports = userRouter;

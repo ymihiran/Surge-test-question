@@ -8,7 +8,7 @@ import BounceLoader from 'react-spinners/BounceLoader'
 export default function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("tempory12@temp.com");
+  const [email, setEmail] = useState("tempory1@temp.com");
   const [mobile, setMobile] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [rPassword, setRPassword] = useState("");
@@ -58,10 +58,7 @@ export default function Register() {
   
 
   return (
-    <LoadingOverlay
-            active={loading}
-            spinner={<BounceLoader />}
-    >
+    
     <div>
         
 
@@ -69,6 +66,10 @@ export default function Register() {
 
     <div class="page-wrapper p-t-130 p-b-100 font-poppins">
         <div class="wrapper wrapper--w680">
+        <LoadingOverlay
+            active={loading}
+            spinner={<BounceLoader />}
+        >
             <div class="card card-4">
                 <div class="card-body">
                     <h2 class="title">Registration Form</h2>
@@ -148,13 +149,14 @@ export default function Register() {
                     </form>
                 </div>
             </div>
+            </LoadingOverlay>  
         </div>
     </div>
     
 
     </div>
 
-    </LoadingOverlay>  
+   
     
 
   );
