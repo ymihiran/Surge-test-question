@@ -2,15 +2,19 @@ import React, { useState,useEffect } from "react";
 import './styles/notes.style.css';
 import axios from 'axios';
 
-
 export default function UserList() {
 
   const[request,setRequest] = useState([]);
+  const[pagecount,setPageCount] = useState(0);
+  const[currentPage,setCurrentPage] = useState(1);
+
+  let prevClass = "", nextClass = "";
 
   useEffect(()=>{
           
-      axios.get("http://localhost:8070/user/").then((res)=>{
+      axios.get("http://localhost:8070/user/users?page=1&limit=2").then((res)=>{
             setRequest(res.data.existingUsers);
+            setPageCount(res.data.pages);
             console.log(res.data);
           }).catch((err)=>{
               alert(err.message);
@@ -18,6 +22,53 @@ export default function UserList() {
       
 
   },[])
+
+  const pages = [];
+
+  
+
+  async function updatePagination(){
+
+    if(currentPage==1){
+      prevClass = "page-item disabled";
+      nextClass = "page-item ";
+    }
+    else if(currentPage==pagecount){
+      nextClass = "page-item disabled";
+      prevClass = "page-item ";
+    }
+    else{
+      prevClass = "page-item";
+      nextClass = "page-item ";
+    }
+
+    
+    for(let i=1;i<=pagecount;i++){
+      if(i===currentPage){
+        pages.push(<li className="page-item active"><a className="page-link" onClick={()=>handlePageChange(i)}>{i}</a></li>)
+  
+      }
+      else{
+        pages.push(<li className="page-item"><a className="page-link" onClick={()=>handlePageChange(i)}>{i}</a></li>)
+      }
+  
+    }
+  }
+
+  updatePagination()
+
+  
+
+  async function handlePageChange(page){
+
+      await axios.get("http://localhost:8070/user/users?page="+page+"&limit=2").then((res)=>{
+            setRequest(res.data.existingUsers);
+            setCurrentPage(page);
+            updatePagination()
+          }).catch((err)=>{
+              alert(err.message);
+           })
+  }
 
     return(
         <div style={{ backgroundColor: "white" }}>
@@ -74,6 +125,18 @@ export default function UserList() {
                 </tbody>
           </table>
 
+
+          <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content-end">
+              <li className={prevClass}>
+                <a className="page-link" href="#" tabindex="-1" aria-disabled="true" onClick={()=>handlePageChange(currentPage-1)}>Previous</a>
+              </li>
+              {pages}
+              <li className={nextClass}>
+                <a className="page-link" onClick={()=>handlePageChange(currentPage+1)}>Next</a>
+              </li>
+            </ul>
+          </nav>
         </div>
 
         

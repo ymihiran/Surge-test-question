@@ -65,6 +65,10 @@ userRouter.get('/users', async (req, res) => {
   }
 
   await countDoc();
+
+  const totalPages = Math.ceil(count / limit);
+
+  
   
 
   if (endIndex < count) {
@@ -91,7 +95,8 @@ userRouter.get('/users', async (req, res) => {
       success:true,
       existingUsers:users,
       prev:previous,
-      next:next
+      next:next,
+      pages:totalPages
     });
   });
 
