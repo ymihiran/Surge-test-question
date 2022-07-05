@@ -5,6 +5,7 @@ import StudentNotes from "./components/StudentNotes";
 import AddUser from "./components/AddUser";
 import UserList from "./components/UserList";
 import NoteList from "./components/NotesList";
+import CreateNote from "./components/CreateNote";
 
 function App() {
   return (
