@@ -3,6 +3,9 @@ import './styles/notes.style.css';
 import axios from 'axios';
 import LoadingOverlay from 'react-loading-overlay';
 import PropagateLoader from 'react-spinners/PropagateLoader';
+import { Store } from 'react-notifications-component'; 
+import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import { confirmAlert } from 'react-confirm-alert';
 
 export default function UserList() {
 
@@ -10,19 +13,25 @@ export default function UserList() {
   const[pagecount,setPageCount] = useState(0);
   const[currentPage,setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [person, setPerson] = useState([]);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [nid, setNid] = useState("");
+  const [disable, setDisable] = useState(true);
 
   let prevClass = "page-item", nextClass = "page-item";
 
   useEffect(()=>{
           
-      axios.get("http://localhost:8070/user/users?page=1&limit=2").then((res)=>{
+      axios.get("http://localhost:8070/user/users?page=1&limit=5").then((res)=>{
             setRequest(res.data.existingUsers);
             setPageCount(res.data.pages);
             setLoading(false);
           }).catch((err)=>{
               alert(err.message);
-           })
+          })
       
 
   },[])
@@ -61,7 +70,7 @@ export default function UserList() {
 
     setLoading(true);
 
-      await axios.get("http://localhost:8070/user/users?page="+page+"&limit=2").then((res)=>{
+      await axios.get("http://localhost:8070/user/users?page="+page+"&limit=5").then((res)=>{
             setRequest(res.data.existingUsers);
             setCurrentPage(page);
             updatePagination();
@@ -69,6 +78,108 @@ export default function UserList() {
           }).catch((err)=>{
               alert(err.message);
            })
+  }
+
+  async function handleData(data){
+    setEmail(data.email);
+    setFirstName(data.firstName);
+    setLastName(data.lastName);
+    setMobile(data.mobile);
+    setDateOfBirth(data.dateOfBirth);
+    setNid(data._id)
+  }
+
+  async function handleUpdate(id){
+    setLoading(true);
+    setDisable(true);
+    await axios.put("http://localhost:8070/user/"+id,{
+      firstName,
+      lastName,
+      email,
+      dateOfBirth,
+      mobile
+    }).then((res)=>{
+        setLoading(false);
+        Store.addNotification({
+          title: "User Updated Successfully",
+          message: "User data has been updated successfully",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          type: "info",
+          insert: "top",
+          container: "top-right",
+          
+          dismiss: {
+            duration: 1500,
+            onScreen: true,
+            showIcon: true
+          },
+
+          width:400
+        }); 
+        axios.get("http://localhost:8070/user/users?page="+currentPage+"&limit=5").then((res)=>{
+            setRequest(res.data.existingUsers);
+            setPageCount(res.data.pages);
+            setLoading(false);
+          }).catch((err)=>{
+              alert(err.message);
+          })
+    }).catch((err)=>{
+      alert(err.message);
+    })
+  }
+
+  async function handleDelete(id){
+
+    
+
+    confirmAlert({
+      title: 'Warning!',
+      message: 'Are sure you want to delete this note?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            setLoading(true);
+            setDisable(true);
+            axios.delete("http://localhost:8070/user/"+id).then((res)=>{
+                setLoading(false);
+                Store.addNotification({
+                  title: "User Deleted Successfully",
+                  message: "User data has been deleted successfully",
+                  animationIn: ["animate__animated", "animate__fadeIn"],
+                  animationOut: ["animate__animated", "animate__fadeOut"],
+                  type: "danger",
+                  insert: "top",
+                  container: "top-right",
+                  
+                  dismiss: {
+                    duration: 1500,
+                    onScreen: true,
+                    showIcon: true
+                  },
+        
+                  width:400
+                }); 
+                axios.get("http://localhost:8070/user/users?page="+currentPage+"&limit=5").then((res)=>{
+                    setRequest(res.data.existingUsers);
+                    setPageCount(res.data.pages);
+                    setLoading(false);
+                  }).catch((err)=>{
+                      alert(err.message);
+                  })
+            }).catch((err)=>{
+              alert(err.message);
+            })
+          }
+        },
+        {
+          label: 'No',
+
+        }
+      ]
+    });
+   
   }
 
     return(
@@ -114,13 +225,10 @@ export default function UserList() {
 
                        <td>
   
-                       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{setPerson(data)}}>
-                        View
+                       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{handleData(data)}}>
+                        View User
                       </button>
-                         &nbsp;
-                         <a className="btn btn-danger" href="/credit-card-validation/deleteSalary" >
-                            <i className= "fas fa-trash-alt"></i>&nbsp;Delete
-                         </a>
+  
   
                        </td>
   
@@ -138,7 +246,7 @@ export default function UserList() {
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel"> {person.firstName + " "+person.lastName+"'s profile"}</h5>
+                  <h5 class="modal-title" id="exampleModalLabel"> {firstName + " "+lastName+"'s profile"}</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -147,15 +255,17 @@ export default function UserList() {
                                 <div class="input-group">
                                     <label class="label">first name</label>
                                     <input class="input--style-4" type="text" name="first_name" 
-                                       value={person.firstName} disabled
-                                    />
+                                       value={firstName} disabled={disable}
+                                       onChange={(e)=>{setFirstName(e.target.value)}}/>
+                                  
                                 </div>
                             </div>
                             <div class="col-2" style={{width:"50%"}}>
                                 <div class="input-group">
                                     <label class="label">last name</label>
                                     <input class="input--style-4" type="text" name="last_name" 
-                                       value={person.lastName} disabled
+                                       value={lastName} disabled={disable}
+                                       onChange={(e)=>{setLastName(e.target.value)}}
                                     />
                                 </div>
                             </div>
@@ -166,7 +276,8 @@ export default function UserList() {
                                     <label class="label">Birthday</label> 
                                     <div class="input-group-icon">
                                         <input class="input--style-4 js-datepicker" type="date" name="birthday" 
-                                            value={person.dateOfBirth} disabled
+                                            value={dateOfBirth.substring(0,10)} disabled={disable}
+                                            onChange={(e)=>{setDateOfBirth(e.target.value)}}
                                         />
                                         <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
                                     </div>
@@ -176,7 +287,8 @@ export default function UserList() {
                                 <div class="input-group">
                                     <label class="label">Phone Number</label>
                                     <input class="input--style-4" type="text" name="phone" 
-                                        value={person.mobile} disabled
+                                        value={mobile} disabled={disable}
+                                        onChange={(e)=>{setMobile(e.target.value)}}
                                     />
                                 </div>
                             </div>
@@ -184,15 +296,19 @@ export default function UserList() {
 
                         <div class="input-group">
                                 <label class="label">E-mail Address</label>
-                                <input class="input--style-4" type="email" name="email" disabled 
-                                    value={person.email} 
-                                    
+                                <input class="input--style-4" type="email" name="email" disabled={disable} 
+                                    value={email} 
+                                    onChange={(e)=>{setEmail(e.target.value)}}                                    
                                 />
                         </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                <button className="btn btn-danger" data-bs-dismiss="modal" onClick={()=>handleDelete(nid)}>
+                            <i className= "fas fa-trash-alt"></i>&nbsp;Delete
+                  </button>
+                  
+                  <button type="button" class="btn btn-info" onClick={()=>setDisable(false)}>Edit</button>
+                  <button type="button" class="btn btn-success" data-bs-dismiss="modal" disabled={disable} onClick={()=>handleUpdate(nid)} >Save</button>
                 </div>
               </div>
             </div>

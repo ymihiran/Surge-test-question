@@ -1,15 +1,19 @@
 import { BrowserRouter as Router, Route,Routes } from "react-router-dom";
+import { ReactNotifications } from "react-notifications-component";
+
 import Login from './components/Login';
 import Register from "./components/Register";
 import StudentNotes from "./components/StudentNotes";
 import AddUser from "./components/AddUser";
 import UserList from "./components/UserList";
 import NoteList from "./components/NotesList";
-import CreateNote from "./components/CreateNote";
+
 
 function App() {
   return (
+    
     <Router>
+      <ReactNotifications />
       <Routes>
         <Route path='/' element={<Login />}/>
         <Route path='/register' element={<Register />}/>

@@ -3,6 +3,9 @@ import './styles/notes.style.css';
 import axios from 'axios';
 import LoadingOverlay from 'react-loading-overlay';
 import PropagateLoader from 'react-spinners/PropagateLoader';
+import { confirmAlert } from 'react-confirm-alert';
+import { Store } from 'react-notifications-component'; 
+import 'react-confirm-alert/src/react-confirm-alert.css'; 
 
 export default function NoteList() {
 
@@ -15,6 +18,7 @@ export default function NoteList() {
   const [note, setNote] = useState("");
   const [enable, setEnable] = useState(true);
   const [nid, setNid] = useState("");
+  
   
 
   let prevClass = "page-item ", nextClass = "page-item ";
@@ -85,7 +89,23 @@ export default function NoteList() {
       note
     }).then((res)=>{
         setLoading(false);
-        alert("Note added successfully");
+        Store.addNotification({
+          title: "Note Saved Successfully",
+          message: "Your Note has been saved successfully",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          type: "success",
+          insert: "top",
+          container: "top-right",
+          
+          dismiss: {
+            duration: 1500,
+            onScreen: true,
+            showIcon: true
+          },
+
+          width:400
+        }); 
         axios.get("http://localhost:8070/note/?page=1&limit=5").then((res)=>{
             setRequest(res.data.existingNotes);
             setPageCount(res.data.pages);
@@ -114,7 +134,23 @@ export default function NoteList() {
       note
     }).then((res)=>{
         setLoading(false);
-        alert("Note updated successfully");
+        Store.addNotification({
+          title: "Note Updated Successfully",
+          message: "Your Note has been updated successfully",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          type: "info",
+          insert: "top",
+          container: "top-right",
+          
+          dismiss: {
+            duration: 1500,
+            onScreen: true,
+            showIcon: true
+          },
+
+          width:400
+        }); 
         axios.get("http://localhost:8070/note/?page="+currentPage+"&limit=5").then((res)=>{
             setRequest(res.data.existingNotes);
             setPageCount(res.data.pages);
@@ -128,21 +164,56 @@ export default function NoteList() {
   }
 
   async function handleDelete(id){
-    setLoading(true);
-    setEnable(true);
-    await axios.delete("http://localhost:8070/note/"+id).then((res)=>{
-        setLoading(false);
-        alert("Note deleted successfully");
-        axios.get("http://localhost:8070/note/?page="+currentPage+"&limit=5").then((res)=>{
-            setRequest(res.data.existingNotes);
-            setPageCount(res.data.pages);
-            setLoading(false);
-          }).catch((err)=>{
+
+    
+
+    confirmAlert({
+      title: 'Warning!',
+      message: 'Are sure you want to delete this note?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            setLoading(true);
+            setEnable(true);
+            axios.delete("http://localhost:8070/note/"+id).then((res)=>{
+                setLoading(false);
+                Store.addNotification({
+                  title: "Note Deleted Successfully",
+                  message: "Your Note has been deleted successfully",
+                  animationIn: ["animate__animated", "animate__fadeIn"],
+                  animationOut: ["animate__animated", "animate__fadeOut"],
+                  type: "danger",
+                  insert: "top",
+                  container: "top-right",
+                  
+                  dismiss: {
+                    duration: 1500,
+                    onScreen: true,
+                    showIcon: true
+                  },
+        
+                  width:400
+                }); 
+                axios.get("http://localhost:8070/note/?page="+currentPage+"&limit=5").then((res)=>{
+                    setRequest(res.data.existingNotes);
+                    setPageCount(res.data.pages);
+                    setLoading(false);
+                  }).catch((err)=>{
+                      alert(err.message);
+                  })
+            }).catch((err)=>{
               alert(err.message);
-          })
-    }).catch((err)=>{
-      alert(err.message);
-    })
+            })
+          }
+        },
+        {
+          label: 'No',
+
+        }
+      ]
+    });
+   
   }
 
     return(
@@ -179,13 +250,9 @@ export default function NoteList() {
                        <td>
   
                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewNote" onClick={()=>handleData(data)}>
-                        View
+                        View Note
                       </button>
-                         &nbsp;
-                         <a className="btn btn-danger" href="/credit-card-validation/deleteSalary" >
-                            <i className= "fas fa-trash-alt"></i>&nbsp;Delete
-                         </a>
-  
+                           
                        </td>
   
                     </tr>

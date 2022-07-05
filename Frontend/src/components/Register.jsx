@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import './styles/register.style.css';
 import axios from 'axios';
 import LoadingOverlay from 'react-loading-overlay';
-import PropagateLoader from 'react-spinners/PropagateLoader'
+import PropagateLoader from 'react-spinners/PropagateLoader';
+import { Store } from 'react-notifications-component'; 
+import 'react-confirm-alert/src/react-confirm-alert.css'; 
 
 
 export default function Register() {
@@ -36,7 +38,23 @@ export default function Register() {
 
         axios.post("http://localhost:8070/user/",newUser).then(()=>{
             setLoading(false);
-            alert("User Created Successfully");
+            Store.addNotification({
+                title: "Data Saved Successfully",
+                message: "Your profile data has been successfully saved",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                type: "success",
+                insert: "top",
+                container: "top-right",
+                
+                dismiss: {
+                  duration: 1500,
+                  onScreen: true,
+                  showIcon: true
+                },
+      
+                width:300
+              }); 
         
         }).catch((err)=>{
     
@@ -46,7 +64,23 @@ export default function Register() {
         
     }
     else{
-        alert("Passwords do not match!")
+        Store.addNotification({
+            title: "Password Mismatch!",
+            message: "New password and confirm password do not match",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            type: "warning",
+            insert: "top",
+            container: "top-right",
+            
+            dismiss: {
+              duration: 1500,
+              onScreen: true,
+              showIcon: true
+            },
+  
+            width:300
+          }); 
     }
         
     }
