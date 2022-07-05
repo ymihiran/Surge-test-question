@@ -3,7 +3,8 @@ import Login from './components/Login';
 import Register from "./components/Register";
 import StudentNotes from "./components/StudentNotes";
 import AddUser from "./components/AddUser";
-import UserList from "./components/UserList"; //fgh
+import UserList from "./components/UserList";
+import NoteList from "./components/NotesList";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path='/my-notes' element={<StudentNotes />}/>
         <Route path='/add-user' element={<AddUser />}/>
         <Route path='/user-list' element={<UserList />}/>
+        <Route path='/note-list' element={<NoteList />}/>
       </Routes>
     </Router>
   

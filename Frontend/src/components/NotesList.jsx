@@ -2,18 +2,18 @@ import React, { useState,useEffect } from "react";
 import './styles/notes.style.css';
 import axios from 'axios';
 
-export default function UserList() {
+export default function NoteList() {
 
   const[request,setRequest] = useState([]);
   const[pagecount,setPageCount] = useState(0);
   const[currentPage,setCurrentPage] = useState(1);
 
-  let prevClass = "page-item", nextClass = "page-item";
+  let prevClass = "page-item ", nextClass = "page-item ";
 
   useEffect(()=>{
           
-      axios.get("http://localhost:8070/user/users?page=1&limit=2").then((res)=>{
-            setRequest(res.data.existingUsers);
+      axios.get("http://localhost:8070/note/?page=1&limit=5").then((res)=>{
+            setRequest(res.data.existingNotes);
             setPageCount(res.data.pages);
             console.log(res.data);
           }).catch((err)=>{
@@ -55,8 +55,8 @@ export default function UserList() {
 
   async function handlePageChange(page){
 
-      await axios.get("http://localhost:8070/user/users?page="+page+"&limit=2").then((res)=>{
-            setRequest(res.data.existingUsers);
+      await axios.get("http://localhost:8070/note/?page="+page+"&limit=2").then((res)=>{
+            setRequest(res.data.existingNotes);
             setCurrentPage(page);
             updatePagination()
           }).catch((err)=>{
@@ -67,7 +67,7 @@ export default function UserList() {
     return(
         <div style={{ backgroundColor: "white" }}>
         <div className="t-list-head-container">
-          <label className="h-text">User List</label>
+          <label className="h-text">My Notes</label>
         </div>
 
         <div className="t-list-tb-container">
@@ -76,12 +76,8 @@ export default function UserList() {
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">ID</th>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">E-mail Address</th>
-                <th scope="col">Account Type</th>
-                <th scope="col">Status</th>
+                <th scope="col">Title</th>
+                <th scope="col">Note</th>
                 <th scope="col">
                   Action
                 </th>
@@ -92,13 +88,8 @@ export default function UserList() {
                     
                     <tr key={index}>
                        <th scope="row">{index+1}</th>
-                       <td>{data._id}</td>
-                       <td>{data.firstName}</td>
-                       <td>{data.lastName}</td>
-                       <td>{data.email}</td>
-                       <td>{data.accountType}</td>
-                       <td>{data.status ? ("Registered" ) :  "Pending"}</td>                     
-                      
+                       <td>{data.title}</td>
+                       <td>{ data.note.length>50 ?(data.note.substring(0, 50)+"..."):(data.note)}</td>
 
                        <td>
   
