@@ -39,3 +39,6 @@ app.listen(PORT, () => {
 
 const userRouter = require("./routes/users.routes.js");
 app.use("/user", userRouter);
+
+const noteRouter = require("./routes/notes.routes.js");
+app.use("/note", noteRouter);
