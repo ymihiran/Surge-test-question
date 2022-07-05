@@ -1,12 +1,15 @@
 import React, { useState,useEffect } from "react";
 import './styles/notes.style.css';
 import axios from 'axios';
+import LoadingOverlay from 'react-loading-overlay';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 
 export default function UserList() {
 
   const[request,setRequest] = useState([]);
   const[pagecount,setPageCount] = useState(0);
   const[currentPage,setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   let prevClass = "page-item", nextClass = "page-item";
 
@@ -15,7 +18,7 @@ export default function UserList() {
       axios.get("http://localhost:8070/user/users?page=1&limit=2").then((res)=>{
             setRequest(res.data.existingUsers);
             setPageCount(res.data.pages);
-            console.log(res.data);
+            setLoading(false);
           }).catch((err)=>{
               alert(err.message);
            })
@@ -55,10 +58,13 @@ export default function UserList() {
 
   async function handlePageChange(page){
 
+    setLoading(true);
+
       await axios.get("http://localhost:8070/user/users?page="+page+"&limit=2").then((res)=>{
             setRequest(res.data.existingUsers);
             setCurrentPage(page);
-            updatePagination()
+            updatePagination();
+            setLoading(false);
           }).catch((err)=>{
               alert(err.message);
            })
@@ -69,6 +75,11 @@ export default function UserList() {
         <div className="t-list-head-container">
           <label className="h-text">User List</label>
         </div>
+
+        <LoadingOverlay
+            active={loading}
+            spinner={<PropagateLoader />}
+        >
 
         <div className="t-list-tb-container">
           
@@ -119,6 +130,8 @@ export default function UserList() {
                 </tbody>
           </table>
 
+          
+
 
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-end">
@@ -132,6 +145,8 @@ export default function UserList() {
             </ul>
           </nav>
         </div>
+
+        </LoadingOverlay>
 
         
       </div>

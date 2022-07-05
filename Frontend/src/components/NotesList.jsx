@@ -1,12 +1,15 @@
 import React, { useState,useEffect } from "react";
 import './styles/notes.style.css';
 import axios from 'axios';
+import LoadingOverlay from 'react-loading-overlay';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 
 export default function NoteList() {
 
   const[request,setRequest] = useState([]);
   const[pagecount,setPageCount] = useState(0);
   const[currentPage,setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   let prevClass = "page-item ", nextClass = "page-item ";
 
@@ -15,7 +18,7 @@ export default function NoteList() {
       axios.get("http://localhost:8070/note/?page=1&limit=5").then((res)=>{
             setRequest(res.data.existingNotes);
             setPageCount(res.data.pages);
-            console.log(res.data);
+            setLoading(false);
           }).catch((err)=>{
               alert(err.message);
            })
@@ -54,11 +57,12 @@ export default function NoteList() {
   
 
   async function handlePageChange(page){
-
+    setLoading(true);
       await axios.get("http://localhost:8070/note/?page="+page+"&limit=2").then((res)=>{
             setRequest(res.data.existingNotes);
             setCurrentPage(page);
-            updatePagination()
+            updatePagination();
+            setLoading(false);
           }).catch((err)=>{
               alert(err.message);
            })

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import './styles/register.style.css';
 import axios from 'axios';
-import LoadingOverlay from 'react-loading-overlay'
-import BounceLoader from 'react-spinners/BounceLoader'
+import LoadingOverlay from 'react-loading-overlay';
+import PropagateLoader from 'react-spinners/PropagateLoader'
 
 
 export default function Register() {
@@ -68,7 +68,7 @@ export default function Register() {
         <div class="wrapper wrapper--w680">
         <LoadingOverlay
             active={loading}
-            spinner={<BounceLoader />}
+            spinner={<PropagateLoader />}
         >
             <div class="card card-4">
                 <div class="card-body">
