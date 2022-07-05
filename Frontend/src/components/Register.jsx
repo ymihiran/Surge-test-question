@@ -75,7 +75,7 @@ export default function Register() {
                     <h2 class="title">Registration Form</h2>
                     <form onSubmit={handleSubmit}>
                         <div class="row row-space">
-                            <div class="col-2">
+                            <div class="col-2" style={{width:"50%"}}>
                                 <div class="input-group">
                                     <label class="label">first name</label>
                                     <input class="input--style-4" type="text" name="first_name" 
@@ -83,7 +83,7 @@ export default function Register() {
                                     />
                                 </div>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2" style={{width:"50%"}}>
                                 <div class="input-group">
                                     <label class="label">last name</label>
                                     <input class="input--style-4" type="text" name="last_name" 
@@ -93,9 +93,9 @@ export default function Register() {
                             </div>
                         </div>
                         <div class="row row-space">
-                            <div class="col-2">
+                            <div class="col-2" style={{width:"50%"}}>
                                 <div class="input-group">
-                                    <label class="label">Birthday</label>
+                                    <label class="label">Birthday</label> 
                                     <div class="input-group-icon">
                                         <input class="input--style-4 js-datepicker" type="date" name="birthday" 
                                             onChange={(e)=> setDateOfBirth(e.target.value)} 
@@ -104,7 +104,7 @@ export default function Register() {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2" style={{width:"50%"}}>
                                 <div class="input-group">
                                     <label class="label">Phone Number</label>
                                     <input class="input--style-4" type="text" name="phone" 
@@ -123,7 +123,7 @@ export default function Register() {
                         </div>
 
                         <div class="row row-space">
-                            <div class="col-2">
+                            <div class="col-2" style={{width:"50%"}}>
                                 <div class="input-group">
                                     <label class="label">New Password</label>
                                     <input class="input--style-4" type="password" name="password" 
@@ -131,7 +131,7 @@ export default function Register() {
                                     />
                                 </div>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2" style={{width:"50%"}}>
                                 <div class="input-group">
                                     <label class="label">Confirm Password</label>
                                     <input class="input--style-4" type="password" name="rPassword" 

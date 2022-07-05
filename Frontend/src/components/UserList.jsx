@@ -10,6 +10,7 @@ export default function UserList() {
   const[pagecount,setPageCount] = useState(0);
   const[currentPage,setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [person, setPerson] = useState([]);
 
   let prevClass = "page-item", nextClass = "page-item";
 
@@ -113,9 +114,9 @@ export default function UserList() {
 
                        <td>
   
-                         <a className="btn btn-warning" href="/credit-card-validation/EditSalary2"  >
-                            <i className= "fas fa-edit"></i>&nbsp;Edit
-                         </a>
+                       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{setPerson(data)}}>
+                        View
+                      </button>
                          &nbsp;
                          <a className="btn btn-danger" href="/credit-card-validation/deleteSalary" >
                             <i className= "fas fa-trash-alt"></i>&nbsp;Delete
@@ -129,6 +130,73 @@ export default function UserList() {
              ))}
                 </tbody>
           </table>
+
+
+          
+
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"> {person.firstName + " "+person.lastName+"'s profile"}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <div class="row row-space">
+                            <div class="col-2" style={{width:"50%"}}>
+                                <div class="input-group">
+                                    <label class="label">first name</label>
+                                    <input class="input--style-4" type="text" name="first_name" 
+                                       value={person.firstName} disabled
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-2" style={{width:"50%"}}>
+                                <div class="input-group">
+                                    <label class="label">last name</label>
+                                    <input class="input--style-4" type="text" name="last_name" 
+                                       value={person.lastName} disabled
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2" style={{width:"50%"}}>
+                                <div class="input-group">
+                                    <label class="label">Birthday</label> 
+                                    <div class="input-group-icon">
+                                        <input class="input--style-4 js-datepicker" type="date" name="birthday" 
+                                            value={person.dateOfBirth} disabled
+                                        />
+                                        <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2" style={{width:"50%"}}>
+                                <div class="input-group">
+                                    <label class="label">Phone Number</label>
+                                    <input class="input--style-4" type="text" name="phone" 
+                                        value={person.mobile} disabled
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                                <label class="label">E-mail Address</label>
+                                <input class="input--style-4" type="email" name="email" disabled 
+                                    value={person.email} 
+                                    
+                                />
+                        </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
           
 
