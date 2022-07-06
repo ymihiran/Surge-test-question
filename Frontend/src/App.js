@@ -7,6 +7,7 @@ import StudentNotes from "./components/StudentNotes";
 import AddUser from "./components/AddUser";
 import UserList from "./components/UserList";
 import NoteList from "./components/NotesList";
+import Header from "./components/Header";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     
     <Router>
       <ReactNotifications />
+      <Header />
       <Routes>
         <Route path='/' element={<Login />}/>
         <Route path='/register' element={<Register />}/>
