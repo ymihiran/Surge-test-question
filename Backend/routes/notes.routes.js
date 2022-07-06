@@ -1,5 +1,6 @@
 const noteRouter = require("express").Router();
 let Note = require("../models/note.model.js");
+const {auth} = require('../middleware/auth');
 
 
 // Add new note

@@ -4,6 +4,7 @@ import { Store } from 'react-notifications-component';
 import axios from 'axios';
 import LoadingOverlay from 'react-loading-overlay';
 import PropagateLoader from 'react-spinners/PropagateLoader';
+import emailjs from "emailjs-com";
 
 
 export default function AddUser() {
@@ -38,6 +39,27 @@ export default function AddUser() {
       
                 width:300
               }); 
+
+			  const templateParams = {
+				mail: email,
+				password: password,
+			  };	
+
+			  emailjs
+				.sendForm(
+					"service_5klbgr8",
+					"template_cw12s8h",
+					{mail: email, password: password},
+					"1ItT6mzKYklphzeLy"
+				)
+				.then(
+					(result) => {
+						alert("Sent!");
+					},
+					(error) => {
+					console.log(error.text);
+					}
+				);
         
         }).catch((err)=>{
     
@@ -64,7 +86,7 @@ export default function AddUser() {
 						</span>
 					</div>
 					<div className="wrap-input100 validate-input" data-validate = "Username is required">
-						<input className="input100" type="email" name="username" required
+						<input className="input100" type="email" name="mail" required
 							onChange={(e) => setEmail(e.target.value)}
 						/>
 						<span className="focus-input100"></span>
