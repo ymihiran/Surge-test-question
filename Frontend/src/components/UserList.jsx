@@ -255,7 +255,7 @@ export default function UserList() {
                                 <div class="input-group">
                                     <label class="label">first name</label>
                                     <input class="input--style-4" type="text" name="first_name" 
-                                       value={firstName} disabled={disable}
+                                       value={firstName?(firstName):"Not Set"} disabled={disable}
                                        onChange={(e)=>{setFirstName(e.target.value)}}/>
                                   
                                 </div>
@@ -264,7 +264,7 @@ export default function UserList() {
                                 <div class="input-group">
                                     <label class="label">last name</label>
                                     <input class="input--style-4" type="text" name="last_name" 
-                                       value={lastName} disabled={disable}
+                                       value={lastName?(lastName):"Not Set" } disabled={disable}
                                        onChange={(e)=>{setLastName(e.target.value)}}
                                     />
                                 </div>
@@ -276,7 +276,7 @@ export default function UserList() {
                                     <label class="label">Birthday</label> 
                                     <div class="input-group-icon">
                                         <input class="input--style-4 js-datepicker" type="date" name="birthday" 
-                                            value={dateOfBirth.substring(0,10)} disabled={disable}
+                                            value={dateOfBirth? (dateOfBirth.substring(0,10)):""} disabled={disable}
                                             onChange={(e)=>{setDateOfBirth(e.target.value)}}
                                         />
                                         <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
@@ -287,7 +287,7 @@ export default function UserList() {
                                 <div class="input-group">
                                     <label class="label">Phone Number</label>
                                     <input class="input--style-4" type="text" name="phone" 
-                                        value={mobile} disabled={disable}
+                                        value={mobile?(mobile):"Not Set"} disabled={disable}
                                         onChange={(e)=>{setMobile(e.target.value)}}
                                     />
                                 </div>

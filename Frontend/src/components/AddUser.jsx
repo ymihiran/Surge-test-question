@@ -1,14 +1,49 @@
 import React, { useState } from "react";
 import './styles/login.style.css';
+import { Store } from 'react-notifications-component'; 
+import axios from 'axios';
+import LoadingOverlay from 'react-loading-overlay';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 
 
 export default function AddUser() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(username, password);
+
+	const newUser = {  
+		email,
+		password,
+	}
+
+	axios.post("http://localhost:8070/user/",newUser).then(()=>{
+            setLoading(false);
+            Store.addNotification({
+                title: "User Added Successfully",
+                message: "Account creation successfull",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                type: "success",
+                insert: "top",
+                container: "top-right",
+                
+                dismiss: {
+                  duration: 1500,
+                  onScreen: true,
+                  showIcon: true
+                },
+      
+                width:300
+              }); 
+        
+        }).catch((err)=>{
+    
+            alert(err);
+        })
+    
   };
 
   return (
@@ -17,7 +52,7 @@ export default function AddUser() {
     <div className="limiter">
 		<div className="container-login100">
 			<div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
-				<form className="login100-form validate-form flex-sb flex-w">
+				<form className="login100-form validate-form flex-sb flex-w" onSubmit={handleSubmit}>
 					<span className="login100-form-title p-b-53">
 						Welcome! <br /> Add new user
 					</span>
@@ -29,7 +64,9 @@ export default function AddUser() {
 						</span>
 					</div>
 					<div className="wrap-input100 validate-input" data-validate = "Username is required">
-						<input className="input100" type="text" name="username" required/>
+						<input className="input100" type="email" name="username" required
+							onChange={(e) => setEmail(e.target.value)}
+						/>
 						<span className="focus-input100"></span>
 					</div>
 					
@@ -40,12 +77,14 @@ export default function AddUser() {
 
 					</div>
 					<div className="wrap-input100 validate-input" data-validate = "Password is required">
-						<input className="input100" type="password" name="pass" required />
+						<input className="input100" type="password" name="pass" required 
+							onChange={(e) => setPassword(e.target.value)}
+						/>
 						<span className="focus-input100"></span>
 					</div>
 
 					<div className="container-login100-form-btn m-t-17">
-						<button className="login100-form-btn">
+						<button className="login100-form-btn" onClick={()=>handleSubmit()}>
 							Create Account
 						</button>
 					</div>
