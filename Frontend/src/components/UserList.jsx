@@ -6,6 +6,7 @@ import PropagateLoader from 'react-spinners/PropagateLoader';
 import { Store } from 'react-notifications-component'; 
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
 import { confirmAlert } from 'react-confirm-alert';
+import Cookie from "js-cookie";
 
 export default function UserList() {
 
@@ -24,8 +25,13 @@ export default function UserList() {
   let prevClass = "page-item", nextClass = "page-item";
 
   useEffect(()=>{
-          
-      axios.get("http://localhost:8070/user/users?page=1&limit=5").then((res)=>{
+    
+      console.log(Cookie.get('userSecret'));      
+      axios.get("http://localhost:8070/users/allUsers?page=1&limit=5", {
+        headers: {
+          Authorization: Cookie.get('userSecret')
+        }
+       }).then((res)=>{
             setRequest(res.data.existingUsers);
             setPageCount(res.data.pages);
             setLoading(false);
@@ -70,7 +76,11 @@ export default function UserList() {
 
     setLoading(true);
 
-      await axios.get("http://localhost:8070/user/users?page="+page+"&limit=5").then((res)=>{
+      await axios.get("http://localhost:8070/users/allUsers?page="+page+"&limit=5",{
+        headers: {
+          Authorization: Cookie.get('userSecret')
+        }
+       }).then((res)=>{
             setRequest(res.data.existingUsers);
             setCurrentPage(page);
             updatePagination();
@@ -92,13 +102,17 @@ export default function UserList() {
   async function handleUpdate(id){
     setLoading(true);
     setDisable(true);
-    await axios.put("http://localhost:8070/user/"+id,{
+    await axios.put("http://localhost:8070/users/"+id,{
       firstName,
       lastName,
       email,
       dateOfBirth,
       mobile
-    }).then((res)=>{
+    },{
+      headers: {
+        Authorization: Cookie.get('userSecret')
+      }
+     }).then((res)=>{
         setLoading(false);
         Store.addNotification({
           title: "User Updated Successfully",
@@ -117,7 +131,11 @@ export default function UserList() {
 
           width:400
         }); 
-        axios.get("http://localhost:8070/user/users?page="+currentPage+"&limit=5").then((res)=>{
+        axios.get("http://localhost:8070/users/allUsers?page="+currentPage+"&limit=5",{
+          headers: {
+            Authorization: Cookie.get('userSecret')
+          }
+         }).then((res)=>{
             setRequest(res.data.existingUsers);
             setPageCount(res.data.pages);
             setLoading(false);
@@ -142,7 +160,11 @@ export default function UserList() {
           onClick: () => {
             setLoading(true);
             setDisable(true);
-            axios.delete("http://localhost:8070/user/"+id).then((res)=>{
+            axios.delete("http://localhost:8070/users/"+id,{
+              headers: {
+                Authorization: Cookie.get('userSecret')
+              }
+             }).then((res)=>{
                 setLoading(false);
                 Store.addNotification({
                   title: "User Deleted Successfully",
@@ -161,7 +183,11 @@ export default function UserList() {
         
                   width:400
                 }); 
-                axios.get("http://localhost:8070/user/users?page="+currentPage+"&limit=5").then((res)=>{
+                axios.get("http://localhost:8070/users/allUsers?page="+currentPage+"&limit=5",{
+                  headers: {
+                    Authorization: Cookie.get('userSecret')
+                  }
+                 }).then((res)=>{
                     setRequest(res.data.existingUsers);
                     setPageCount(res.data.pages);
                     setLoading(false);
@@ -200,8 +226,6 @@ export default function UserList() {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">ID</th>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
                 <th scope="col">E-mail Address</th>
                 <th scope="col">Account Type</th>
                 <th scope="col">Status</th>
@@ -216,8 +240,6 @@ export default function UserList() {
                     <tr key={index}>
                        <th scope="row">{index+1}</th>
                        <td>{data._id}</td>
-                       <td>{data.firstName}</td>
-                       <td>{data.lastName}</td>
                        <td>{data.email}</td>
                        <td>{data.accountType}</td>
                        <td>{data.status ? ("Registered" ) :  "Pending"}</td>                     
@@ -238,6 +260,8 @@ export default function UserList() {
              ))}
                 </tbody>
           </table>
+
+          <a href="/add-user" class="btn btn-primary">+ Create New User</a>
 
 
           
@@ -329,6 +353,8 @@ export default function UserList() {
             </ul>
           </nav>
         </div>
+
+        
 
         </LoadingOverlay>
 

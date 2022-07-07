@@ -4,23 +4,29 @@ import { Store } from 'react-notifications-component';
 import axios from 'axios';
 import LoadingOverlay from 'react-loading-overlay';
 import PropagateLoader from 'react-spinners/PropagateLoader';
-import emailjs from "emailjs-com";
+import { useNavigate } from "react-router-dom";
 
+import Cookie from "js-cookie";
 
 export default function AddUser() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const navigate = useNavigate();
 
+  const handleSubmit = (e) => {
+	e.preventDefault();
 	const newUser = {  
 		email,
 		password,
 	}
 
-	axios.post("http://localhost:8070/user/",newUser).then(()=>{
+	axios.post("http://localhost:8070/users/register",newUser,{
+        headers: {
+          Authorization: Cookie.get('userSecret')
+        }
+       }).then(()=>{
             setLoading(false);
             Store.addNotification({
                 title: "User Added Successfully",
@@ -43,23 +49,11 @@ export default function AddUser() {
 			  const templateParams = {
 				mail: email,
 				password: password,
-			  };	
+			  };
+			  
+			  navigate("/user-list");
 
-			  emailjs
-				.sendForm(
-					"service_5klbgr8",
-					"template_cw12s8h",
-					{mail: email, password: password},
-					"1ItT6mzKYklphzeLy"
-				)
-				.then(
-					(result) => {
-						alert("Sent!");
-					},
-					(error) => {
-					console.log(error.text);
-					}
-				);
+			  
         
         }).catch((err)=>{
     
@@ -74,6 +68,10 @@ export default function AddUser() {
     <div className="limiter">
 		<div className="container-login100">
 			<div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+				<LoadingOverlay
+					active={loading}
+					spinner={<PropagateLoader />}
+				>
 				<form className="login100-form validate-form flex-sb flex-w" onSubmit={handleSubmit}>
 					<span className="login100-form-title p-b-53">
 						Welcome! <br /> Add new user
@@ -106,7 +104,7 @@ export default function AddUser() {
 					</div>
 
 					<div className="container-login100-form-btn m-t-17">
-						<button className="login100-form-btn" onClick={()=>handleSubmit()}>
+						<button className="login100-form-btn" type="submit">
 							Create Account
 						</button>
 					</div>
@@ -121,6 +119,7 @@ export default function AddUser() {
 						</a>
 					</div>
 				</form>
+				</LoadingOverlay>
 			</div>
 		</div>
 	</div>

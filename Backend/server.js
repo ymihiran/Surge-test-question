@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const app = express();
+const cookieparser = require("cookie-parser");
+
 
 require("dotenv").config();
 
@@ -26,6 +28,7 @@ mongoose.connect(process.env.DATABASE, {
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieparser());
 app.use(bodyParser.json());
 
 
@@ -39,6 +42,9 @@ app.listen(PORT, () => {
 
 const userRouter = require("./routes/users.routes.js");
 app.use("/user", userRouter);
+
+const usersRouter = require("./routes/user.routes.js");
+app.use("/users", usersRouter);
 
 const noteRouter = require("./routes/notes.routes.js");
 app.use("/note", noteRouter);

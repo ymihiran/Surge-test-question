@@ -5,12 +5,14 @@ import LoadingOverlay from 'react-loading-overlay';
 import PropagateLoader from 'react-spinners/PropagateLoader';
 import { Store } from 'react-notifications-component'; 
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import Cookie from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("tempory1@temp.com");
+  const [email, setEmail] = useState(Cookie.get('userMail'));
   const [mobile, setMobile] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [rPassword, setRPassword] = useState("");
@@ -18,7 +20,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
 
-
+  const navigate = useNavigate();
   const status = true;
 
   const handleSubmit = (e) => {
@@ -36,7 +38,11 @@ export default function Register() {
             password,
         }
 
-        axios.post("http://localhost:8070/user/",newUser).then(()=>{
+        axios.put("http://localhost:8070/users/register",newUser,{
+            headers: {
+              Authorization: Cookie.get('userSecret')
+            }
+           }).then(()=>{
             setLoading(false);
             Store.addNotification({
                 title: "Data Saved Successfully",
@@ -55,6 +61,8 @@ export default function Register() {
       
                 width:300
               }); 
+
+                navigate("/note-list");
         
         }).catch((err)=>{
     
@@ -64,6 +72,7 @@ export default function Register() {
         
     }
     else{
+        setLoading(false);
         Store.addNotification({
             title: "Password Mismatch!",
             message: "New password and confirm password do not match",

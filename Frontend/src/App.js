@@ -3,7 +3,6 @@ import { ReactNotifications } from "react-notifications-component";
 
 import Login from './components/Login';
 import Register from "./components/Register";
-import StudentNotes from "./components/StudentNotes";
 import AddUser from "./components/AddUser";
 import UserList from "./components/UserList";
 import NoteList from "./components/NotesList";
@@ -19,7 +18,6 @@ function App() {
       <Routes>
         <Route path='/' element={<Login />}/>
         <Route path='/register' element={<Register />}/>
-        <Route path='/my-notes' element={<StudentNotes />}/>
         <Route path='/add-user' element={<AddUser />}/>
         <Route path='/user-list' element={<UserList />}/>
         <Route path='/note-list' element={<NoteList />}/>

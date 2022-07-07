@@ -5,10 +5,10 @@ const path = require("path");
 const sendMail = (name, temPassword, email, url) => {
   //initialize nodemailer
   var transporter = nodemailer.createTransport({
-    service: "outlook",
+    service: "gmail",
     auth: {
-      user: "mahi.sl@outlook.com",
-      pass: "Yasantha1",
+      user: "sliit.rmt@gmail.com",
+      pass: "mvvarvjzcwfxwuft",
     },
   });
 
@@ -23,10 +23,10 @@ const sendMail = (name, temPassword, email, url) => {
   transporter.use("compile", hbs(handleBar));
 
   var mailOptions = {
-    from: "My Notes List",
+    from: "NotesPal List",
     to: email,
-    subject: "My Notes List",
-    text: "hi",
+    subject: "NotesPal Account Created",
+    text: "Hello",
     template: "email",
     context: {
       name: name,

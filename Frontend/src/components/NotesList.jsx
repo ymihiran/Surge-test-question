@@ -6,6 +6,7 @@ import PropagateLoader from 'react-spinners/PropagateLoader';
 import { confirmAlert } from 'react-confirm-alert';
 import { Store } from 'react-notifications-component'; 
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import Cookie from "js-cookie";
 
 export default function NoteList() {
 
@@ -13,7 +14,7 @@ export default function NoteList() {
   const[pagecount,setPageCount] = useState(0);
   const[currentPage,setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(Cookie.get('userMail'));
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
   const [enable, setEnable] = useState(true);
@@ -25,7 +26,11 @@ export default function NoteList() {
 
   useEffect(()=>{
           
-      axios.get("http://localhost:8070/note/?page=1&limit=5").then((res)=>{
+      axios.get("http://localhost:8070/note/"+email +"?page=1&limit=5",{
+        headers: {
+          Authorization: Cookie.get('userSecret')
+        }
+       }).then((res)=>{
             setRequest(res.data.existingNotes);
             setPageCount(res.data.pages);
             setLoading(false);
@@ -42,10 +47,10 @@ export default function NoteList() {
 
   async function updatePagination(){
 
-    if(currentPage==1){
+    if(currentPage===1){
       prevClass = "page-item disabled";
     }
-    if(currentPage==pagecount){
+    if(currentPage===pagecount){
       nextClass = "page-item disabled";
     }
 
@@ -68,7 +73,11 @@ export default function NoteList() {
 
   async function handlePageChange(page){
     setLoading(true);
-      await axios.get("http://localhost:8070/note/?page="+page+"&limit=5").then((res)=>{
+      await axios.get("http://localhost:8070/note/"+email +"?page="+page+"&limit=5",{
+        headers: {
+          Authorization: Cookie.get('userSecret')
+        }
+       }).then((res)=>{
             setRequest(res.data.existingNotes);
             setCurrentPage(page);
             updatePagination();
@@ -87,7 +96,11 @@ export default function NoteList() {
       email,
       title,
       note
-    }).then((res)=>{
+    },{
+      headers: {
+        Authorization: Cookie.get('userSecret')
+      }
+     }).then((res)=>{
         setLoading(false);
         Store.addNotification({
           title: "Note Saved Successfully",
@@ -106,7 +119,11 @@ export default function NoteList() {
 
           width:400
         }); 
-        axios.get("http://localhost:8070/note/?page=1&limit=5").then((res)=>{
+        axios.get("http://localhost:8070/note/"+email+"?page=1&limit=5",{
+          headers: {
+            Authorization: Cookie.get('userSecret')
+          }
+         }).then((res)=>{
             setRequest(res.data.existingNotes);
             setPageCount(res.data.pages);
             setLoading(false);
@@ -132,7 +149,11 @@ export default function NoteList() {
       email,
       title,
       note
-    }).then((res)=>{
+    },{
+      headers: {
+        Authorization: Cookie.get('userSecret')
+      }
+     }).then((res)=>{
         setLoading(false);
         Store.addNotification({
           title: "Note Updated Successfully",
@@ -151,7 +172,11 @@ export default function NoteList() {
 
           width:400
         }); 
-        axios.get("http://localhost:8070/note/?page="+currentPage+"&limit=5").then((res)=>{
+        axios.get("http://localhost:8070/note/"+email +"?page="+currentPage+"&limit=5",{
+          headers: {
+            Authorization: Cookie.get('userSecret')
+          }
+         }).then((res)=>{
             setRequest(res.data.existingNotes);
             setPageCount(res.data.pages);
             setLoading(false);
@@ -176,7 +201,11 @@ export default function NoteList() {
           onClick: () => {
             setLoading(true);
             setEnable(true);
-            axios.delete("http://localhost:8070/note/"+id).then((res)=>{
+            axios.delete("http://localhost:8070/note/"+id,{
+              headers: {
+                Authorization: Cookie.get('userSecret')
+              }
+             }).then((res)=>{
                 setLoading(false);
                 Store.addNotification({
                   title: "Note Deleted Successfully",
@@ -195,7 +224,11 @@ export default function NoteList() {
         
                   width:400
                 }); 
-                axios.get("http://localhost:8070/note/?page="+currentPage+"&limit=5").then((res)=>{
+                axios.get("http://localhost:8070/note/"+email +"?page="+currentPage+"&limit=5",{
+                  headers: {
+                    Authorization: Cookie.get('userSecret')
+                  }
+                 }).then((res)=>{
                     setRequest(res.data.existingNotes);
                     setPageCount(res.data.pages);
                     setLoading(false);
